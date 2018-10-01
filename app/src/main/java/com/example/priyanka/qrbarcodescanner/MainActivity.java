@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import com.google.zxing.Result;
 
+import org.json.JSONObject;
+
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 import static android.Manifest.permission.CAMERA;
@@ -116,8 +118,8 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
         new android.support.v7.app.AlertDialog.Builder(MainActivity.this)
                 .setMessage(message)
-                .setPositiveButton("OK", okListener)
-                .setNegativeButton("Cancel", null)
+                .setPositiveButton("Add", okListener)
+                .setNeutralButton("Re-Scan", null)
                 .create()
                 .show();
     }
@@ -126,25 +128,54 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     public void handleResult(Result result) {
         final String myResult = result.getText();
         Log.d("QRCodeScanner", result.getText());
-        Log.d("QRCodeScanner", result.getBarcodeFormat().toString());
+        Log.d("QRCodeScanner1", result.getBarcodeFormat().toString());
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Scan Result");
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+        builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                HttpRequest request = new HttpRequest
+                        ("https://pronics-digital.000webhostapp.com/addSerialNumber.php");
+                request.setOnHttpResponseListener(mHttpResponseListener);
+                request.setMethod("POST");
+                request.addData("serialNumber", myResult.toString());
+                request.execute();
+                Log.d("QRCodeScanner2", myResult);
+                scannerView.resumeCameraPreview(MainActivity.this);
+            }
+        });
+        builder.setNeutralButton("Re-Scan", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 scannerView.resumeCameraPreview(MainActivity.this);
             }
         });
-        builder.setNeutralButton("Visit", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(myResult));
-                startActivity(browserIntent);
-            }
-        });
+
+
         builder.setMessage(result.getText());
         AlertDialog alert1 = builder.create();
         alert1.show();
+
+
     }
+    private HttpRequest.OnHttpResponseListener mHttpResponseListener =
+            new HttpRequest.OnHttpResponseListener() {
+                @Override
+                public void onResponse(String response){
+
+                    // process response here
+                    try {
+                        Log.i("JSON Results: ", response);
+
+                        JSONObject jsonObj = new JSONObject(response);
+                        Toast.makeText(getApplicationContext(), jsonObj.getString("message"), Toast.LENGTH_SHORT).show();
+                    }
+                    catch(Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            };
+
 }
