@@ -11,4 +11,9 @@
         android:orderInCategory="101"
         android:title="Scanner"/>
 
+    <item
+        android:id="@+id/third"
+        android:orderInCategory="102"
+        android:title="Third"/>
+
 </menu>

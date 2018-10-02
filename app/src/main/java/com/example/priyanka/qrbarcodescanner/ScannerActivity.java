@@ -2,9 +2,11 @@ package com.example.priyanka.qrbarcodescanner;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -15,9 +17,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.zxing.Result;
 
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
@@ -29,12 +36,24 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
     private ZXingScannerView scannerView;
     private static int camId = Camera.CameraInfo.CAMERA_FACING_BACK;
 
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+    private static final int PREFERENCE_MODE_PRIVATE = 0;
+    private static final String MY_FILE = "myFile";
+
+    ArrayList<String> serialNumbers = new ArrayList<String>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         scannerView = new ZXingScannerView(this);
         setContentView(scannerView);
+
+        sharedPreferences = getSharedPreferences(MY_FILE, PREFERENCE_MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
+
         int currentApiVersion = Build.VERSION.SDK_INT;
 
         if(currentApiVersion >=  Build.VERSION_CODES.M)
@@ -58,6 +77,14 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
     {
         ActivityCompat.requestPermissions(this, new String[]{CAMERA}, REQUEST_CAMERA);
     }
+
+//    private void packagesharedPreferences() {
+//        Set<String> set = new HashSet<String>();
+//        set.addAll(serialNumbers);
+//        editor.putStringSet("SERIAL_LIST", set);
+//        editor.commit();
+//        Log.d("storesharedPreferences",""+set);
+//    }
 
     @Override
     public void onResume() {
@@ -123,7 +150,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
     }
 
     @Override
-    public void handleResult(Result result) {
+    public void handleResult(final Result result) {
         final String myResult = result.getText();
         Log.d("QRCodeScanner", result.getText());
         Log.d("QRCodeScanner1", result.getBarcodeFormat().toString());
@@ -134,14 +161,18 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
         builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                HttpRequest request = new HttpRequest
-                        ("https://pronics-digital.000webhostapp.com/addSerialNumber.php");
-                request.setOnHttpResponseListener(mHttpResponseListener);
-                request.setMethod("POST");
-                request.addData("serialNumber", myResult.toString());
-                request.execute();
-                Log.d("QRCodeScanner2", myResult);
+//                HttpRequest request = new HttpRequest
+//                        ("https://pronics-digital.000webhostapp.com/addSerialNumber.php");
+//                request.setOnHttpResponseListener(mHttpResponseListener);
+//                request.setMethod("POST");
+//                request.addData("serialNumber", myResult.toString());
+//                request.execute();
+
+                serialNumbers.add(myResult.toString());
+
+                Toast.makeText(getApplicationContext(), "Successful", Toast.LENGTH_SHORT).show();
                 scannerView.resumeCameraPreview(ScannerActivity.this);
+                Log.i("ArrayList", serialNumbers.toString());
             }
         });
         builder.setNeutralButton("Re-Scan", new DialogInterface.OnClickListener() {
@@ -150,13 +181,9 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                 scannerView.resumeCameraPreview(ScannerActivity.this);
             }
         });
-
-
         builder.setMessage(result.getText());
         AlertDialog alert1 = builder.create();
         alert1.show();
-
-
     }
     private HttpRequest.OnHttpResponseListener mHttpResponseListener =
             new HttpRequest.OnHttpResponseListener() {
@@ -191,6 +218,10 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
         }
         else if (id == R.id.main){
             Intent i = new Intent(ScannerActivity.this, MainActivity.class);
+            startActivity(i);
+        }
+        else if (id == R.id.third) {
+            Intent i = new Intent(ScannerActivity.this, FinalActivity.class);
             startActivity(i);
         }
         return super.onOptionsItemSelected(item);
