@@ -7,14 +7,22 @@
     android:orientation="vertical"
     tools:context="com.example.priyanka.qrbarcodescanner.MainActivity">
 
+    <View
+        android:layout_width="1dp"
+        android:layout_height="30dp"/>
+
     <TextView
         android:id="@+id/textViewTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/holo_orange_dark"
-        android:textSize="30dp"
         android:gravity="center"
-        android:text="Scanning In or Out?" />
+        android:text="Scanning In or Out?"
+        android:textColor="@android:color/holo_orange_dark"
+        android:textSize="30dp" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="30dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,9 +31,10 @@
 
         <TextView
             android:id="@+id/textViewName"
-            android:layout_width="100dp"
+            android:layout_width="107dp"
             android:layout_height="wrap_content"
-            android:text="Product Name:" />
+            android:text=" Product Name:"
+            android:textSize="15dp"/>
 
         <EditText
             android:id="@+id/editTextItem"
@@ -36,6 +45,10 @@
             android:text="" />
     </LinearLayout>
 
+    <View
+        android:layout_width="1dp"
+        android:layout_height="30dp"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -44,7 +57,7 @@
         <RadioGroup
             android:id="@+id/radioInOut"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <RadioButton
                 android:id="@+id/radioIn"
@@ -56,15 +69,22 @@
                 android:id="@+id/radioOut"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Out"
-                android:checked="true" />
+                android:checked="true"
+                android:text="Out" />
 
         </RadioGroup>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="30dp"/>
     </LinearLayout>
 
     <Button
         android:id="@+id/btnScan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Scan" />
+        android:text="Scan"
+        android:layout_gravity="center"
+        android:backgroundTint="#FFA500"
+        android:textColor="#FFFFFF"/>
 </LinearLayout>

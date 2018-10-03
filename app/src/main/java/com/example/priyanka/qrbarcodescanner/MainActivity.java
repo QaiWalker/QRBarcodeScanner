@@ -79,11 +79,7 @@ public class MainActivity extends AppCompatActivity{
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.scanner){
-            Intent i = new Intent(MainActivity.this, ScannerActivity.class);
-            startActivity(i);
-        }
-        else if (id == R.id.main){
+        if (id == R.id.main){
             Intent i = new Intent(MainActivity.this, MainActivity.class);
             startActivity(i);
         }

@@ -7,13 +7,8 @@
         android:title="Main"/>
 
     <item
-        android:id="@+id/scanner"
-        android:orderInCategory="101"
-        android:title="Scanner"/>
-
-    <item
         android:id="@+id/third"
-        android:orderInCategory="102"
-        android:title="Third"/>
+        android:orderInCategory="101"
+        android:title="Confirm"/>
 
 </menu>

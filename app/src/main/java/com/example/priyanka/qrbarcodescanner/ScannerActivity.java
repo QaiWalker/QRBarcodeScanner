@@ -41,7 +41,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
     private static final int PREFERENCE_MODE_PRIVATE = 0;
     private static final String MY_FILE = "myFile";
 
-    ArrayList<String> serialNumbers = new ArrayList<String>();
+    ArrayList<String> serialNumbers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +52,8 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
         sharedPreferences = getSharedPreferences(MY_FILE, PREFERENCE_MODE_PRIVATE);
         editor = sharedPreferences.edit();
-
+        serialNumbers = new ArrayList<String>();
+        Log.i("arr", "onCreate");
 
         int currentApiVersion = Build.VERSION.SDK_INT;
 
@@ -158,50 +159,34 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Scan Result");
 
+
         builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-//                HttpRequest request = new HttpRequest
-//                        ("https://pronics-digital.000webhostapp.com/addSerialNumber.php");
-//                request.setOnHttpResponseListener(mHttpResponseListener);
-//                request.setMethod("POST");
-//                request.addData("serialNumber", myResult.toString());
-//                request.execute();
-
                 serialNumbers.add(myResult.toString());
-
-                Toast.makeText(getApplicationContext(), "Successful", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Serial Number Added", Toast.LENGTH_SHORT).show();
                 scannerView.resumeCameraPreview(ScannerActivity.this);
-                Log.i("ArrayList", serialNumbers.toString());
+                Log.i("arraylist", serialNumbers.toString());
             }
         });
         builder.setNeutralButton("Re-Scan", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 scannerView.resumeCameraPreview(ScannerActivity.this);
+
             }
         });
         builder.setMessage(result.getText());
         AlertDialog alert1 = builder.create();
         alert1.show();
+
     }
-    private HttpRequest.OnHttpResponseListener mHttpResponseListener =
-            new HttpRequest.OnHttpResponseListener() {
-                @Override
-                public void onResponse(String response){
-
-                    // process response here
-                    try {
-                        Log.i("JSON Results: ", response);
-
-                        JSONObject jsonObj = new JSONObject(response);
-                        Toast.makeText(getApplicationContext(), jsonObj.getString("message"), Toast.LENGTH_SHORT).show();
-                    }
-                    catch(Exception e){
-                        e.printStackTrace();
-                    }
-                }
-            };
+    public void saveArrayList(ArrayList<String> list, String key){
+        Gson gson = new Gson();
+        String json = gson.toJson(list);
+        editor.putString(key, json);
+        editor.apply();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -212,15 +197,12 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.scanner){
-            Intent i = new Intent(ScannerActivity.this, ScannerActivity.class);
-            startActivity(i);
-        }
-        else if (id == R.id.main){
+        if (id == R.id.main){
             Intent i = new Intent(ScannerActivity.this, MainActivity.class);
             startActivity(i);
         }
         else if (id == R.id.third) {
+            saveArrayList(serialNumbers,"serialList");
             Intent i = new Intent(ScannerActivity.this, FinalActivity.class);
             startActivity(i);
         }
