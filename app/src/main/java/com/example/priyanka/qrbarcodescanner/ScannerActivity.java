@@ -79,14 +79,6 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
         ActivityCompat.requestPermissions(this, new String[]{CAMERA}, REQUEST_CAMERA);
     }
 
-//    private void packagesharedPreferences() {
-//        Set<String> set = new HashSet<String>();
-//        set.addAll(serialNumbers);
-//        editor.putStringSet("SERIAL_LIST", set);
-//        editor.commit();
-//        Log.d("storesharedPreferences",""+set);
-//    }
-
     @Override
     public void onResume() {
         super.onResume();

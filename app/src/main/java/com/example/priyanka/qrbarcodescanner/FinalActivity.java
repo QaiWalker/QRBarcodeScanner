@@ -34,7 +34,6 @@ public class FinalActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private static final int PREFERENCE_MODE_PRIVATE = 0;
     private static final String MY_FILE = "myFile";
-    ArrayList<String> serialNumbers;
     ArrayAdapter<String> adapter;
 
     @Override
@@ -48,7 +47,7 @@ public class FinalActivity extends AppCompatActivity {
         lv = findViewById(R.id.lv);
 
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat mdformat = new SimpleDateFormat("yyyy/MM/dd ");
+        SimpleDateFormat mdformat = new SimpleDateFormat("yyyy-MM-dd ");
         final String strDate = mdformat.format(calendar.getTime());
         tvSerial.setText("Date: " + strDate);
         sharedPreferences = getSharedPreferences(MY_FILE, PREFERENCE_MODE_PRIVATE);
